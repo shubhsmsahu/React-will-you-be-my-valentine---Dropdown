@@ -138,14 +138,85 @@ const states = [{
 }];
 
 
-function App() 
-{
-	// Do not alter/remove main div
-	return (
-	<div id="main">
-		
-	</div>
-	);
+const styles = {
+  display: "grid",
+  gridTemplateColumns: "1fr 1fr"
+};
+const selectStyle = {
+  display: "block",
+  width: "100%",
+  height: "2.5rem",
+  padding: "10px",
+  marginTop: "10px"
+};
+const divStyles = {
+  margin: "5px",
+  border: "1px solid grey",
+  padding: "5px"
+};
+
+function App() {
+  const [state, setstate] = useState(0);
+  const [city, setcity] = useState(0);
+  const [landmark, setlandmark] = useState(0);
+
+  // Do not alter/remove main div
+  const getOptions = (arr) => {
+    return arr.map((item, index) => (
+      <option key={index} value={index}>
+        {arr[index].name}
+      </option>
+    ));
+  };
+  const getDivs = (place, arr) => {
+    return (
+      <div style={divStyles}>
+        <div id={place + "-name"}>
+          <strong>{arr.name}</strong>
+        </div>
+        <div id={place + "-description"}>{arr.description}</div>
+      </div>
+    );
+  };
+  const setplace = (place, val) => {
+    if (place === "state") {
+      setstate(val);
+    } else if (place === "city") {
+      setcity(val);
+    } else {
+      setlandmark(val);
+    }
+  };
+  return (
+    <div id="main" style={styles}>
+      <div>
+        {["state", "city", "landmark"].map((place, index) => (
+          <select
+            key={index}
+            style={selectStyle}
+            name={place}
+            id={place}
+            onClick={(event) => setplace(place, event.target.value)}
+          >
+            {place === "state"
+              ? getOptions(states)
+              : place === "city"
+              ? getOptions(states[state].city)
+              : getOptions(states[state].city[city].landmarks)}
+          </select>
+        ))}
+      </div>
+      <div>
+        {["state", "city", "landmark"].map((place, index) =>
+          place === "state"
+            ? getDivs(place, states[state])
+            : place === "city"
+            ? getDivs(place, states[state].city[city])
+            : getDivs(place, states[state].city[city].landmarks[landmark])
+        )}
+      </div>
+    </div>
+  );
 }
 
 
